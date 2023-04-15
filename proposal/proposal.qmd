@@ -1,0 +1,58 @@
+---
+title: "Final Project Proposal"
+author: "Courtney Jones"
+date: "March 24, 2023"
+format:
+  html:
+    code-fold: true
+    embed-resources: true
+jupyter: python3
+---
+
+## Introduction
+
+The topic I have chosen for my research project is homelessness in NYC. When observing the complaints in the 311 NYC Service Requests dataset, I noticed that “Homeless Person Assistance” had a striking prevalence. This sparked my interest as, growing up in a city where homelessness is extremely apparent, I have always been intrigued about the homeless crisis. More specifically, the stigmas and systemic issues tied to it. Homeless individuals are a common point of contention in cities, especially NYC. Many people want to find a way to help and house homeless people, while others look down on them or just see them as an eyesore. When seeing how often “Homeless Person Assistance” was called into 311 services, I wondered about the density of locations and whether it was with the intent of compassion or disgust.
+
+Though it is quite hard to retrieve data on homeless individuals, since they do not have much of a footprint without an address, there are lots of demographics on homeless individuals in shelters. The Department of Homeless Services (DHS), which is the department responsible for these 311 request calls, provides many statistics regarding age, gender, family dynamics, and race. There is an alarming rate of homeless minorities, as the data from the DHS reflects. Other common issues include mental illness and substance abuse. Many homeless people suffer with both of these issues, as it is reflected in the US Department of Housing and Urban Development’s Annual Homeless Assessment Report to Congress.
+
+The issues expressed above are common topics when it comes to researching homelessness. I hope for my project to delve a bit into NYC's actions towards homelessness, rather than the demographics of the homeless themselves. Some points of interest being the actions of citizens, DHS responses, and how affective the DHS seems to be.
+
+## Specific Aims
+
+Where are concerns regarding homeless people most common and what do the resolution descriptions reflect? 
+
+Though these requests do not reflect the attitude and feelings of the individuals that called, I am hoping to see in what parts of NYC do people most often bring it upon themselves to be involved in getting homeless people off of the streets. An article from the New York Post discusses that many New Yorkers have empathy for the homeless, but many are also fearful of the homeless attacking them on the street. Though the reason for someone calling is not reflected in the data, potentially looking at the type of location (sidewalk, subway, building, etc) could give a bit of insight into why people feel the need to call the DHS (more research on the role and reputation of the DHS and insight into the attitudes of homeless people in these locations could also give context to the data found).
+
+Regarding the way these calls are resolved, the most common "Resolution Description" in the data was that the homeless individual could not be found, and I am interested in this reason's relationship to the duration of the report being open. I plan to contextualize these results with the reputation that the DHS has in the city. For example, if New Yorkers find that the DHS does good for the city and if they find it to be a reliable and helpful source.
+
+Moreover, I am quite interested in the responses of the homeless to these requests. The second most common "Resolution Description" was that the individual did not wish to be helped. Learning about homelessness, it is actually quite common that homeless people refuse to go to shelters. Whether it is pride, mental health, or fear, a large population of homeless individuals refuse to receive help from the government or shelters. An article from Gothamist discusses that homeless individuals who go to shelters may be forcefully sent to psychiatric hospitals, which would be a reasonable fear to cause someone to refuse help. Perhaps exploring this data could give context to or portray this sentiment.
+
+## Data
+
+The dataset I will be pulling from is the 311 Service Request Data from the NYC OpenData site. The portion of the dataset that I am currently considering to use is the entries reported from January 15th 2023 to January 21st 2023. From this, I plan to use a subset of the data where the complaint type is only “Homeless Person Assistance”, which would have 410 observations. I am considering looking into a wider timeframe if I believe it will better portray the information I am interested in. There are 41 columns. The ones of highest interest to me would be those related to Time (Created Date, Closed Date), location (Location Type, Incident Zip, Cross Street 1, Cross Street 2, Borough, Latitude, Longitude, Location), and the Resolution Description.
+
+## Research design/methods/schedule
+
+There are about three and a half weeks to work on this project. My consultation being in about a week, I plan to get a decent grasp of the methods that I will use to explore my data by then. This means that I hope to have a pretty decent layout of how I would like to explore my data, and a general idea of the methods I wish to use to execute the specificities I would like to explore. Some methods may be a few of the following examples: how to measure the duration of requests, how to depict the relationship between duration and the resolution descriptons, mapping the locations of calls and the demographics of responses, and so on. For the following week and a half, I plan to finalize my codes. Then, in the final week leading up to my presentation, I plan to finalize my presentation to make it well organized, interesting, descriptive, and the appropriate length of time.
+
+## Discussion
+
+There are many trends I expect to see in the results. I expect to see a very high density of requests in the Manhattan area as, to my understanding, many homeless individuals reside there due to how populous this area is. Moreover, since this area is more populous, it seems likely that the frequency of calls in general would be higher there as well. I believe to see a relationship between the time it takes to respond to a call and the resolution stating that the homeless individuals were not able to be found. As homeless individuals are hard to track in general, it seems logical that the more time that passes would make it less likely to be able to find a homeless individual. I am hoping to find various relationships with the resolutions of the situations, one potential relationship involving the location type (sidewalk, subway, religious building, etc).
+
+I am curious if my results will be able to show critiques of the DHS. I am not very knowledgeable on this department yet, but I am curious if they are widely liked or disliked by NYC and for what reasons. If my results show that the duration that the report is open correlates positively with the rate at which homeless individuals are not able to be found, then this could potentially show negligence on the department's behalf.
+
+If my data shows results that I have never expected, this would spark interest in me to explore articles and research on results that astound me,
+
+## Conclusion
+
+Homelessness and the way it should be treated in NYC is an extensive topic that the city struggles with. This project hopes to explore location of reports, duration of reports, and the resolutions of these reports to see if the data can reflect and explore certain sentiments and assumptions about the homeless crisis in NYC and how it is dealt with by the city.
+
+## References
+
+DHS Data Dashboard - Fiscal Year 2023 Q2 - Nyc.gov. https://www.nyc.gov/assets/dhs/downloads/pdf/dashboard/FYTD23-DHS-Data-Dashboard-Charts.pdf. 
+
+Robinson, Brian. “If We Don't Fix Homelessness, More New Yorkers Will Abandon the City.” New York Post, New York Post, 9 July 2022, https://nypost.com/2022/07/09/if-we-dont-fix-nyc-homelessness-more-nyers-will-abandon-the-city/. 
+
+HUD User Home Page | HUD USER. https://www.huduser.gov/Publications/pdf/ahar.pdf. 
+
+Chau LamPublished Dec 12, 2022Modified Dec 12, and 2023 at 8:05 p.m. Elizabeth ShwePublished Mar 24. “Homeless New Yorkers Explain Why They Avoid City Shelters.” Gothamist, https://gothamist.com/news/homeless-new-yorkers-tell-why-they-avoid-shelters-the-drama-is-part-of-it. 
