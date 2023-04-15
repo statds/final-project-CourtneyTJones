@@ -1,0 +1,279 @@
+---
+title: "Final Project"
+author: "Courtney Jones"
+date: "April 14, 2023"
+format:
+  html:
+    code-fold: true
+    embed-resources: true
+jupyter: python3
+---
+
+# New York City Department of Homeless Services
+
+## Introduction
+
+### What is the Department of Homeless Services?
+
+* Brief summary of the DHS
+* Describe what it takes for calls to close.
+
+### Controversies
+
+* neglect for homeless individuals physically and in mental health
+* just kicked off the streets when bothering non-homeless individuals
+
+https://gothamist.com/news/more-new-yorkers-complained-about-homeless-during-mayor-adams-first-year-nyc-311-data
+
+### What has Been Done?
+
+### The Main Focus Of This Project
+
+This project will focus on the credibility of the Department of Homeless Services. 
+
+I plan to assess the reputation that the DHS has in NYC, specifically their reliability. This will be done by analyzing the amount of time that it takes to close a 311 call, and see if this impacts the abiility to find a homeless individual or encampment. The expectation is to see if, the longer the case takes to close, the less likely it is to find the individual or encampment that the call was made for.
+
+I would also like to look into the treatment of cases when comparing an individual for an entire encampment. The city is known to see encampments as more of an burden, so I am curious to see if the there are time differences in closing a case for Encampments and Homeless Individual calls.
+
+Lastly, I would also like to compare two weeks in Winter to two weeks in Spring to see if there is a stark difference in amount of calls as well as if there are differences in the data the I compare above. Time permitting, I will analyze the probability of more individuals accepting service in the differing months, as homeless individuals are very likely to refuse service.
+
+## A Look Into the Data
+
+* Give some simple statistics that relate to percentage of calls in certain areas (Manhattan typically has the most calls)
+* Percentage of likelihood to refuse service and relate this to current problems. Then delve into the analysis of duration.
+
+The data I will be looking into is the 311 calls from the NYC Open Data of 311 Service Requests. This is an open database that collects all of the 311 Service Requests. I will be using all of the data where the 311 requests were handled by the Department of Homeless Services.
+
+### Exploring
+
+creating duration and making responses binary (will likely define these variables in a seperate folder to make presentation look less cluttered)
+
+```{python}
+import pandas as pd
+
+jandata = pd.read_csv("jandata.csv")
+jd = jandata[jandata["Agency"].str.contains("DHS")]
+
+import numpy as np
+
+# convert the Created Date and Closed Date columns to datetime format
+jd["Created Date"] = pd.to_datetime(jd["Created Date"], format="%m/%d/%Y %I:%M:%S %p")
+jd["Closed Date"] = pd.to_datetime(jd["Closed Date"], format="%m/%d/%Y %I:%M:%S %p")
+
+# calculate the duration in hours and create a new duration column
+jd["duration"] = (jd["Closed Date"] - jd["Created Date"]).dt.total_seconds() / 3600
+
+# replace missing or infinite values with 0
+jd["duration"] = jd["duration"].replace([np.inf, -np.inf, np.nan], 0)
+
+# convert the duration to days, hours, minutes, and seconds and create a new duration_formatted column
+duration_days, duration_seconds = divmod(jd["duration"] * 3600, 86400)
+duration_hours, duration_seconds = divmod(duration_seconds, 3600)
+duration_minutes, duration_seconds = divmod(duration_seconds, 60)
+jd["duration_formatted"] = duration_days.astype(int).astype(str) + " days " + duration_hours.astype(int).astype(str) + " hours " + duration_minutes.astype(int).astype(str) + " minutes " + duration_seconds.astype(int).astype(str) + " seconds"
+
+# create a list of the desired strings
+desired_strings = [
+    "The mobile outreach response team offered services to the individual, but the individual did not accept assistance.",
+    "The Department of Homeless Services (DHS) visited the location and is coordinating with their agency partners to address the condition. No further information will be available with 311.",
+    "The individual was found and outreach assistance was offered."
+]
+
+# create a new column with all values set to 0
+jd["resolution_binary"] = 0
+
+# set values to 1 where the "Resolution Description" column contains one of the desired strings
+jd.loc[jd["Resolution Description"].isin(desired_strings), "resolution_binary"] = 1
+
+d_f = jd[jd["resolution_binary"] == 0] # fail
+d_s = jd[jd["resolution_binary"] == 1] # success
+```
+
+#### Reliability
+
+To assess reliability, I have decided to look at the duration that a 311 case is open and whether or not the homeless individual or encampment was found.
+
+Here is the list of resolutions, the bolded statements are when the individual or encampment were "found":
+
+* The mobile outreach response team went to the location provided but could not find the individual that you reported.                                                              
+* **The mobile outreach response team offered services to the individual, but the individual did not accept assistance. **
+* The Department of Homeless Services did not have enough information to act on your request.
+* **The Department of Homeless Services (DHS) visited the location and is coordinating with their agency partners to address the condition. No further information will be available with 311.**
+* The Department of Homeless Services (DHS) visited the location but could not find the condition you reported. If it still exists, please submit a new Service Request.               
+* The Department of Homeless Services has reviewed your Service Request and determined that the issue is not within its jurisdiction.                                                     
+* **The individual was found and outreach assistance was offered.**                           
+* Based on the information you provided, the Department of Homeless Services has referred this request to the New York City Police Department.                                               
+* Due to technical issues or other circumstances, the Department of Homeless Services has determined that this request should now be administratively closed.                           
+
+```{python}
+import pandas as pd
+
+# assuming d, d_f, and d_s are already defined
+d_duration_desc = jd["duration"].describe()
+d_f_duration_desc = d_f["duration"].describe()
+d_s_duration_desc = d_s["duration"].describe()
+
+# combine the describe() outputs horizontally
+combined_desc = pd.concat([d_duration_desc, d_f_duration_desc, d_s_duration_desc], axis=1)
+
+# add column names
+combined_desc.columns = ["d duration", "d_f duration", "d_s duration"]
+
+# display the combined dataframe as a table
+display(combined_desc)
+```
+
+```{python}
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# assuming d, d_f, and d_s are already defined
+# create histogram of duration column for d
+plt.hist(jd["duration"], bins=20)
+plt.xlabel("Duration")
+plt.ylabel("Frequency")
+plt.title("Histogram of Duration for d")
+
+# show the plot
+plt.show()
+
+# create histogram of duration column for d_f
+plt.hist(d_f["duration"], bins=20)
+plt.xlabel("Duration")
+plt.ylabel("Frequency")
+plt.title("Histogram of Duration for d_f")
+
+# show the plot
+plt.show()
+
+# create histogram of duration column for d_s
+plt.hist(d_s["duration"], bins=20)
+plt.xlabel("Duration")
+plt.ylabel("Frequency")
+plt.title("Histogram of Duration for d_s")
+
+# show the plot
+plt.show()
+```
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Combine the data frames into one
+combined_df = pd.concat([jd['duration'], d_s['duration'], d_f['duration']], keys=['d', 'd_s', 'd_f'], axis=1)
+
+# Create the boxplot
+fig, ax = plt.subplots()
+combined_df.boxplot(ax=ax)
+ax.set_ylabel("Duration")
+ax.set_title("Boxplot of Duration by Group")
+
+plt.show()
+```
+
+As seen by the data, the spreads seem to be a bit similar with an extreme amount of outliers. 
+
+(editing note: consider dichotimizing the variables so that there is a cut off point)
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Create the scatter plot
+fig, ax = plt.subplots(figsize=(25, 25))
+
+# Color the points based on the "resolution_binary" column
+ax.scatter(jd[jd["resolution_binary"] == 1]['Longitude'], jd[jd["resolution_binary"] == 1]['Latitude'], color='blue', alpha=0.5, label='Resolution = 1')
+ax.scatter(jd[jd["resolution_binary"] == 0]['Longitude'], jd[jd["resolution_binary"] == 0]['Latitude'], color='red', alpha=0.5, label='Resolution = 0')
+
+# Set the axis labels and title
+ax.set_xlabel('Longitude')
+ax.set_ylabel('Latitude')
+ax.set_title('Map of Data')
+
+# Set the axis limits
+ax.set_xlim([-74.2, -73.7])
+ax.set_ylim([40.55, 40.9])
+
+# Add a legend
+ax.legend()
+
+plt.show()
+```
+
+As it can be seen in this image, a large amount of points seem to cluster by the borough Manhattan. (editing note: add statistic about this here perhaps)
+
+```{python}
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
+
+# Drop rows containing NaN values in the "duration" and "resolution_binary" columns
+jd.dropna(subset=['duration', 'resolution_binary'], inplace=True)
+
+# Convert the resolution_binary column to a binary 0/1 column
+jd['resolution_binary'] = jd['resolution_binary'].astype(int)
+
+# Fit a logistic regression model with duration as the independent variable and resolution_binary as the dependent variable
+model = LogisticRegression()
+model.fit(jd[['duration']], jd['resolution_binary'])
+
+# Add a new column to the data with the predicted probabilities
+jd['prob_success'] = model.predict_proba(jd[['duration']])[:, 1]
+
+# Visualize the relationship between duration and resolution_binary, and add the regression line
+sns.regplot(data=jd, x='duration', y='resolution_binary', logistic=True, scatter_kws={"s": 10})
+plt.show()
+
+# Visualize the relationship between duration and the predicted probability of success
+sns.regplot(data=jd, x='duration', y='prob_success', scatter_kws={"s": 10})
+plt.show()
+```
+
+As shown in this model, the longer the duration, the less likely that homeless individuals will be found. (edit note: potentially add a cut off of one week - 168 hours, or do the data again without the outliers)
+
+#### Encampments v Individuals
+
+#### Winter v Spring
+
+Again, put the code in the code folder to make the presentation less cluttered.
+
+```{python}
+aprdata = pd.read_csv("aprdata.csv")
+ad = aprdata[aprdata["Agency"].str.contains("DHS")]
+
+import numpy as np
+
+# convert the Created Date and Closed Date columns to datetime format
+ad["Created Date"] = pd.to_datetime(ad["Created Date"], format="%m/%d/%Y %I:%M:%S %p")
+ad["Closed Date"] = pd.to_datetime(ad["Closed Date"], format="%m/%d/%Y %I:%M:%S %p")
+
+# calculate the duration in hours and create a new duration column
+ad["duration"] = (ad["Closed Date"] - ad["Created Date"]).dt.total_seconds() / 3600
+
+# replace missing or infinite values with 0
+ad["duration"] = ad["duration"].replace([np.inf, -np.inf, np.nan], 0)
+
+# convert the duration to days, hours, minutes, and seconds and create a new duration_formatted column
+duration_days, duration_seconds = divmod(ad["duration"] * 3600, 86400)
+duration_hours, duration_seconds = divmod(duration_seconds, 3600)
+duration_minutes, duration_seconds = divmod(duration_seconds, 60)
+ad["duration_formatted"] = duration_days.astype(int).astype(str) + " days " + duration_hours.astype(int).astype(str) + " hours " + duration_minutes.astype(int).astype(str) + " minutes " + duration_seconds.astype(int).astype(str) + " seconds"
+
+# create a list of the desired strings
+desired_strings = [
+    "The mobile outreach response team offered services to the individual, but the individual did not accept assistance.",
+    "The Department of Homeless Services (DHS) visited the location and is coordinating with their agency partners to address the condition. No further information will be available with 311.",
+    "The individual was found and outreach assistance was offered."
+]
+
+# create a new column with all values set to 0
+ad["resolution_binary"] = 0
+
+# set values to 1 where the "Resolution Description" column contains one of the desired strings
+ad.loc[ad["Resolution Description"].isin(desired_strings), "resolution_binary"] = 1
+```
+
+## Analysis
