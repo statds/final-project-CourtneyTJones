@@ -1,0 +1,274 @@
+---
+title: "Homelessness in New York City"
+author: "Courtney Jones"
+date: "April 26, 2023"
+format:
+  html:
+    code-fold: true
+    embed-resources: true
+jupyter: python3
+---
+## Introduction
+When thinking about New York City, what is one major problem that is constantly being seen, heard, and spoken about? Typically, the homeless epidemic comes to mind when thinking of various issues in the city. This problem seems to be of increasing concern, and a major talking point in NYC politics. Some see homelessness as a serious mental health and systemic issue, while others see it as an eyesore and people to be afraid of. I hope to delve into what the calls reflect about the individuals of NYC, the abilities of the Department of Homeless Services (DHS), and the difference in calls between Winter and Summer.
+
+## Data Description
+This Data comes from NYC Open Data of 311 Service Requests. There are two subsets. The main focus of the project will be the subset that has a Created Request Date from 00:00:00 01/01/2023 to 11:59:59 01/31/2023. The last section that will touch on Summer vs Winter months will be from 00:00:00 08/01/2022 to 08/31/2022. Both subsets will also only be requests made to the DHS Agency. There is also a brief use of a yearlong span of data from 00:00:00 04/01/2022 to 03/31/2023.
+
+Before starting, some important characteristics of the data should be addressed:
+
+### Relevant Characteristics
+* **Complaint Type**: individual or encampment
+    * *Homeless Person Assistance*: individual
+    * *Encampment*: location where one or more homeless people live, unsheltered
+* **Location Type**: where the subject of interest was seen
+* **Resolution Description**: how the situation was resolved
+* **Borough**: the five NYC boroughs
+* **Latitude and Longitude**: the location of the request
+
+### Created Characteristics
+#### Duration
+
+    How long the request took to close
+
+ * The amount of time, in hours, from the created date and time of the request to the closed date and time
+
+#### Found 
+
+	This is based off of the resolution descriptions. Whether the person/encampment was 
+    found or not found. The following are the resolution descriptions. Bolded are Found
+    by the DHS, Italicized are Not Found, and the rest are not included in this 
+    variable (NaN):
+
+* *The mobile outreach response team went to the location provided but could not find the individual that you reported.*
+* **The mobile outreach response team offered services to the individual, but the individual did not accept assistance.**
+* **The Department of Homeless Services (DHS) visited the location and is coordinating with their agency partners to address the condition. No further information will be available with 311.** 
+* The Department of Homeless Services did not have enough information to act on your request. 
+* *The Department of Homeless Services (DHS) visited the location but could not find the condition you reported. If it still exists, please submit a new Service Request.*
+* Based on the information you provided, the Department of Homeless Services has referred this request to the New York City Police Department.
+* **The individual was found and outreach assistance was offered.** 
+* The Department of Homeless Services has reviewed your Service Request and determined that the issue is not within its jurisdiction. 
+* NaN
+* Due to technical issues or other circumstances, the Department of Homeless Services has determined that this request should now be administratively closed.
+
+*Note: this does NOT mean that the person/encampment received help, just that they were found*
+
+## Relevant Works and Information
+#### DHS and homelessness
+* DHS's message: “Together with our not-for-profit partners, our mission is to prevent homelessness when possible, address street homelessness, provide safe temporary shelter, and connect New Yorkers experiencing homelessness to suitable housing. We do this with accountability, empathy, and equity.” [1]
+* NYC 311 Portal: "Call 911 if: on subway tracks, creating hazard (blocking sidewalk/atm), creating a danger to themselves or others".
+    * "DHS will send a mobile  outreach response team within 1 hour to encourage the person to accept services" and 4 hours with chronic homelessness. [2]
+
+#### 311 articles
+* The City News: There is an "annual summer phenomenon in which homeless families seek shelters before the start of school in the Fall to ensure children can attend schools nearby". [3]
+* The Gothamist uses 311 Data to critique Mayor Adams' first year (2022), who is very focused on “'making the city safe again for those that complained to him about the city being unsafe,'' as opposed to addressing homeless New Yorkers’ needs for food, clothing shelter, and housing" [4]
+    * Discusses the large amount of Manhattan calls, there's little acceptance for shelter, there's an abundance of calls from what people SEE (sidewalks/streets), warmer weather shows more calls.
+    * "These increased requests may reflect New Yorkers seeking to solve problems in their neighborhoods through government agencies, rather than through more informal measures - like directly talking to their neighbors" [4]
+
+#### Scientific articles
+* Cornith and Finely use 311 calls in an attempt to detail the distribution of unsheltered homeless individuals in NYC, while seeing how quickly police repspond based off of the affluence of an area. [5]
+* Goldfischer uses 311 data with other sources and saw that police often respond much quicker to calls in recently-gentrified neighborhoods. [6]
+
+## Into the Data
+Before starting, it should be of great importance to remember this detail: 311 requests do not necessarily represent the demographics of homeless individuals. Rather, they reflect more about those who are calling the reports in (what they see, hear, feel, etc).
+
+### A General Look
+
+This purpose of this section is to show important general points about the 311 data calls regarding the homeless.
+
+**Map Homeless Individuals and Encampments**
+
+![](/courtneyjones/Desktop/complaintmap.png)
+
+Notice a very large amount of calls regarding homeless individuals (green). A large density of calls in Manhattan.
+
+![](/Desktop/mcomplaintmap.png)
+
+*Zoomed in on Manhattan*x
+
+**Requests where the individuals or encampments were found**
+
+![](/Desktop/foundmap.png)
+
+Seems to be a lot of subjects not found by the DHS.
+
+![](/Desktop/mfoundmap.png)
+
+*Zoomed in on Manhattan*
+
+**Complaint Type by Borough**
+
+![](/Desktop/boroughvcomplaints.png)
+
+A very large amount of calls in Manhattan.
+
+**Resolution Descriptions by Borough**
+
+![](/Desktop/boroughvcomplaint.png)
+
+![](/Desktop/boroughvcomplainttxt.png)
+
+*This bar graph is colorcoded intentionally: greens are "found", oranges/reds are "not found", grays are neither apply.*
+
+Seems that the most common response for not found is that the mobile outreach went to the location but couldn't find the individual. For found, it seems to be that services were offered to the individual, but they did not accept help.
+
+**Location Type by Borough**
+
+![](/Desktop/bororoughvlocation.png)
+
+Note that most of these locations are outdoor spaces and the greatest amount of spaces are "Street/Sidewalk" and "Subway". Remember the note in the beginnning. These calls seem to have to do with where most people are, not necessarily representative of the demographics of the homeless.
+
+**Location Type by Complaint Type**
+![](/Desktop/complaintvlocation.png)
+
+Individuals have a much greater amount of calls from the "Subway".
+
+#### General Questions
+**Is being "Found" more likely for individuals vs encampments?**
+
+*Encampment proportion found:  0.628808864265928*
+
+*Homeless proportion found:  0.31841909023117076*
+
+*Z-test statistic:  10.76181834377526*
+
+*P-value:  1.3032808257998036e-27*
+
+The DHS are significantly more likely to find encampments than they are individuals.
+
+### Duration
+
+Time is very interesting to look into. Does the DHS work quicker to get rid of encampments (might look bad on the city, a lot more people to help than an individual, or they are easier to find). Does the amount of time they take to respond affect the ability for them to find the individual or encampment? Does it vary per borough? These are very interesting questions to see the time it takes for the DHS to act in relation to outcome. 
+
+HOWEVER, the definition of exactly what "Closed Date" is could not be found. Is it immediately when the the DHS located the area of interest? Is it when they decided to fill out the form? I could not figure this out. But for the sake of interest, it may be interesting to still look into this.
+
+**Duration by Found**
+![](/Desktop/scatterfd.png)
+
+![](/Desktop/boxfd.png)
+
+A lot of outliers, "not found" has a greater spread.
+
+**Duration by Complaint Type**
+![](/Desktop/boxcd.png)
+
+**Duration by Borough**
+![](/Desktop/boxbd.png)
+
+### Summer vs Winter Months
+
+Comparing August 2022 to January 2023. Keep in mind that homelessness is constantly increasing, so August 2023 might have a much greater number of calls.
+
+**Location Types**
+
+![](/Desktop/jlocation.png)
+
+![](/Desktop/alocation.png)
+
+The first bargraph is the same as the first section for January, just scaled to August. These two bargraphs show how there are an extreme spike in the amount of calls in August. Another interesting note is that this is August 2022. Even with homelessness constantly rising in New York, an earlier Summer month still outweighs the Winter month in calls.
+
+Potential Reason: More homeless individuals outside AND more callers outside.
+
+**Durations**
+
+![](/Desktop/jbox.png)
+
+![](/Desktop/abox.png)
+
+A lot more outliers.
+
+**Proportional Complaint Type**
+
+![](/Desktop/complaintprop.png)
+
+The proportion of encampments to individuals increase a bit in the Summer month.
+
+**Proportional Found**
+
+![](/Desktop/foundprop.png)
+
+It seems that the proportion of individuals and encampments found in the Summer months is greater, which is quite interesting considering there are much more calls in August.
+
+#### Questions
+
+**Are "Founds" more likely in the Summer?**
+
+*Proportion in January: 0.38425381903642775*
+
+*Proportion in August: 0.43757320215507145*
+
+*Z-score: 3.7655842493834903*
+
+*P-value: 8.308004105539446e-05*
+
+In August, the DHS is significantly more likely to find the individual or encampment than in January.
+
+**Are there significantly more encampments in the Summer, proportionally?**
+
+*Encampments in January: 361*
+
+*Encampments in August: 1072*
+
+*Homeless Individual Assistance in January: 1693*
+
+*Homeless Individual Assistance in August: 4246*
+
+*Proportion in January: 0.17575463*
+
+*Proportion in August: 0.20157964*
+
+*Z-score: 2.512038031114781*
+
+*P-value: 0.0060018075923223835*
+
+In August, the 311 calls to the DHS are significantly more likely to be about Encampments in August than in January.
+
+**Can the ability for the DHS to find the subject of interest be predicted?**
+
+In order to predict this, let's look at a year long span of being "Found"
+
+![](/Desktop/yearbar.png)
+
+
+![](/Desktop/predict.png)
+
+Not the most accurate predicted, but still above 50%. This is likely due to the small sample size of 12.
+
+#### Improvements
+
+This section could be improved by doing multiple tests on multiple Summer/Winter Months. The second test could be improved by using amuch greater amount of months.
+
+## Conclusion
+
+There is much more that can be done to look into 311 calls, as well as the ability of the DHS and the attitudes of those calling.
+
+**Outside of Individuals**
+
+* Chronic homelessness (this was in the data, but hardly filled in)
+
+* Looking at weather patterns and temperature in relation to calls
+
+* Looking into monetary value when analyzing calls. See how quickly the DHS responds, amount of calls, etc.
+
+**Homeless Individual Attitudes**
+
+* Look into mental health demographics (these statistics are provided on the DHS website)
+
+* Look into the drug epidemic in conjunction with homelessness
+
+* Reasons for refusing service (DHS reputation of poor service or tried before?)
+
+## References
+
+[1] “Inside DHS.” Inside DHS - DHS, Department of Homeless Services, https://www.nyc.gov/site/dhs/about/inside-dhs.page.
+
+[2] “Homeless Assistance.” Homeless Assistance· NYC311, The Official Website of New York City, https://portal.311.nyc.gov/article/?kanumber=KA-01037. 
+
+[3] Smith, Greg B., and Suhail Bhat. “Homeless Shelters Are Overflowing - and Most Likely in Poor Areas, despite Fair Share Promises.” The City, The City, 26 July 2022, https://www.thecity.nyc/2022/7/26/23279842/homeless-shelters-are-overflowing-and-most-likely-in-poor-areas-despite-fair-share-promises. 
+
+[4] Ladyzhets, Betsy. “More New Yorkers Witnessed Homelessness during Mayor Adams' First Year: 311 Data.” Gothamist, 1 Feb. 2023, https://gothamist.com/news/more-new-yorkers-complained-about-homeless-during-mayor-adams-first-year-nyc-311-data. 
+
+[5] Cornith, Kevin, and Grace Finley. “The Geography of Unsheltered Homelessness in the City: Evidence from ‘311’ Calls in New York.” Wiley Online Library, 23 Dec. 2019, https://onlinelibrary.wiley.com/doi/full/10.1111/jors.12478.
+
+[6] Goldfischer, Eric. “From Encampments to Hotspots: The Changing Policing of Homelessness in New York City.” Taylor & Francis, 10 Sep. 2019, https://www.tandfonline.com/doi/abs/10.1080/02673037.2019.1655532. 
+
+[7] DoITT. “311 Service Requests from 2010 to Present: NYC Open Data.” 311 Service Requests from 2010 to Present | NYC Open Data, 27 Apr. 2023, https://data.cityofnewyork.us/Social-Services/311-Service-Requests-from-2010-to-Present/erm2-nwe9. 
